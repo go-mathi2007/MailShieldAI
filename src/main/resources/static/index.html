@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MailShield AI — Intelligent Spam Email Classifier</title>
+    <meta name="description" content="Analyze suspicious email messages using a pure Java Multinomial Naive Bayes classifier.">
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Core Stylesheet -->
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="icon" type="image/svg+xml" href="/images/shield-logo.svg">
+</head>
+<body>
+
+    <!-- =======================================================================
+         NAVIGATION BAR
+         ======================================================================= -->
+    <header class="navbar">
+        <div class="container nav-inner">
+            <div class="brand" data-route="home">
+                <div class="brand-icon">
+                    <img src="/images/shield-logo.svg" alt="MailShield AI Logo" width="36" height="36">
+                </div>
+                <div>
+                    <span class="brand-title">MailShield<span style="color:var(--primary-purple)">AI</span></span>
+                    <span class="brand-badge">Naive Bayes</span>
+                </div>
+            </div>
+
+            <nav>
+                <ul class="nav-links">
+                    <li class="nav-item active" data-view="home">Home</li>
+                    <li class="nav-item" data-view="scanner">Email Scanner</li>
+                    <li class="nav-item" data-view="dashboard">Dashboard</li>
+                    <li class="nav-item" data-view="evaluation">Model & Evaluation</li>
+                    <li class="nav-item" data-view="about">About & Privacy</li>
+                </ul>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="btn btn-primary" data-route="scanner">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <path d="m9 12 2 2 4-4"/>
+                    </svg>
+                    Scan Email
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- =======================================================================
+             PART 2: HOME / LANDING VIEW
+             ======================================================================= -->
+        <section id="home" class="section active">
+            <div class="hero">
+                <div class="hero-pill">
+                    <span>🛡️</span> Pure Java Machine Learning Engine
+                </div>
+                <h1 class="hero-title">
+                    Smarter Email Security<br>
+                    <span>Starts Here</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Analyze suspicious email messages using machine learning and understand their spam classification.
+                </p>
+
+                <div class="hero-cta">
+                    <button class="btn btn-primary" data-route="scanner">
+                        Analyze an Email
+                    </button>
+                    <button class="btn btn-secondary" data-route="evaluation">
+                        Explore Features
+                    </button>
+                </div>
+            </div>
+
+            <!-- Feature Cards (Part 2) -->
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">🤖</div>
+                    <h3>Machine Learning Spam Detection</h3>
+                    <p>Powered by a native Multinomial Naive Bayes algorithm in Java with Laplace smoothing and log-sum-exp posterior stability.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">📁</div>
+                    <h3>Email File Analysis</h3>
+                    <p>Drop standard RFC-822 <code>.eml</code> messages. Safely unpacks multipart MIME structures without running attachments or scripts.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">📊</div>
+                    <h3>Classification History</h3>
+                    <p>Persists threat verdicts, confidence scores, and SHA-256 hashes to an H2 database. Raw email bodies are never stored.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">🔒</div>
+                    <h3>Privacy-Focused Processing</h3>
+                    <p>100% on-premise local execution. Zero dependence on paid cloud APIs, third-party analytics, or Gmail access tokens.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- =======================================================================
+             PART 4: EMAIL SCANNER VIEW
+             ======================================================================= -->
+        <section id="scanner" class="section">
+            <div class="section-header">
+                <div class="section-tag">Cybersecurity Workspace</div>
+                <h2 class="section-title">Email Security Scanner</h2>
+                <p class="section-desc">Paste an incoming message or upload a raw .eml file to examine learned classification signals.</p>
+            </div>
+
+            <div class="scanner-grid">
+                <!-- Left Input Panel -->
+                <div class="card">
+                    <!-- Mode Switcher Tabs -->
+                    <div class="tab-header">
+                        <button class="tab-btn active" data-tab="paste">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                            </svg>
+                            Mode A: Paste Email
+                        </button>
+                        <button class="tab-btn" data-tab="upload">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="17 8 12 3 7 8"/>
+                                <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                            Mode B: Upload .eml File
+                        </button>
+                    </div>
+
+                    <!-- MODE A: Paste Email -->
+                    <div id="mode-paste-container">
+                        <form id="form-paste-analysis">
+                            <div class="form-group">
+                                <label class="form-label" for="paste-sender">Sender Address (Optional)</label>
+                                <input type="text" id="paste-sender" class="form-input" placeholder="e.g. security-team@accounts-update.com">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="paste-subject">Email Subject (Optional)</label>
+                                <input type="text" id="paste-subject" class="form-input" placeholder="e.g. URGENT: Your access has been revoked">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="paste-body">Email Body Content <span style="color:var(--spam-solid)">*</span></label>
+                                <textarea id="paste-body" class="form-textarea" placeholder="Paste full email text or headers here to analyze..." required></textarea>
+                            </div>
+
+                            <div class="scanner-actions">
+                                <div class="sample-buttons">
+                                    <button type="button" id="btn-sample-spam" class="btn btn-outline btn-sm">Load Sample Spam</button>
+                                    <button type="button" id="btn-sample-ham" class="btn btn-outline btn-sm">Load Sample Ham</button>
+                                    <button type="button" id="btn-clear-paste" class="btn btn-outline btn-sm">Clear</button>
+                                </div>
+                                <button type="submit" id="btn-analyze-paste" class="btn btn-primary">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="11" cy="11" r="8"/>
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                                    </svg>
+                                    Analyze Email
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- MODE B: Upload .eml File -->
+                    <div id="mode-upload-container" style="display:none;">
+                        <form id="form-upload-analysis">
+                            <div id="eml-dropzone" class="dropzone">
+                                <div class="dropzone-icon">📥</div>
+                                <div class="dropzone-title">Drag & Drop .eml Email File Here</div>
+                                <div class="dropzone-desc">Supports raw RFC-822 MIME message files up to 5MB. Attachments are isolated.</div>
+                                <input type="file" id="eml-file-input" accept=".eml,message/rfc822" style="display:none;">
+                            </div>
+
+                            <div id="file-preview-card" class="file-preview" style="display:none;">
+                                <div style="display:flex; align-items:center; gap:12px;">
+                                    <span style="font-size:1.4rem;">📄</span>
+                                    <div>
+                                        <div id="preview-file-name" style="font-weight:600; font-size:0.9rem;">sample.eml</div>
+                                        <div id="preview-file-size" style="font-size:0.78rem; color:var(--text-muted)">12 KB</div>
+                                    </div>
+                                </div>
+                                <button type="button" id="btn-remove-file" class="btn btn-outline btn-sm">Remove</button>
+                            </div>
+
+                            <div class="scanner-actions" style="margin-top:24px;">
+                                <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('eml-file-input').click()">Browse Files</button>
+                                <button type="submit" id="btn-analyze-upload" class="btn btn-primary">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                        <polyline points="17 8 12 3 7 8"/>
+                                        <line x1="12" y1="3" x2="12" y2="15"/>
+                                    </svg>
+                                    Analyze Uploaded .eml
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Right Results Panel -->
+                <div class="card">
+                    <h3 style="font-size:1.15rem; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
+                        <span>🔬</span> Classification Output
+                    </h3>
+
+                    <!-- Placeholder when empty -->
+                    <div id="results-placeholder" class="empty-state" style="padding:40px 16px;">
+                        <div class="empty-state-icon">🛡️</div>
+                        <h4 style="font-size:1rem; margin-bottom:6px;">Ready to Analyze</h4>
+                        <p style="font-size:0.86rem; max-width:320px; margin:0 auto;">
+                            Submit an email or click "Load Sample" to view real model-calculated spam probabilities and feature weights.
+                        </p>
+                    </div>
+
+                    <!-- Populated Results Panel -->
+                    <div id="results-container" class="results-panel" style="display:none;">
+                        <!-- Verdict Box -->
+                        <div id="result-verdict-box" class="result-verdict-box spam">
+                            <span id="verdict-tag" class="verdict-tag">THREAT DETECTED</span>
+                            <div id="verdict-title" class="verdict-title">SPAM</div>
+                            <div id="verdict-confidence" class="verdict-confidence">Model Confidence: 98.5%</div>
+                        </div>
+
+                        <!-- Probability Dual Gauges -->
+                        <div class="prob-card">
+                            <div class="prob-row">
+                                <div class="prob-meta">
+                                    <span style="color:var(--spam-text);">Spam Probability</span>
+                                    <span id="bar-spam-val" style="color:var(--spam-text);">98.5%</span>
+                                </div>
+                                <div class="progress-track">
+                                    <div id="progress-bar-spam" class="progress-fill spam" style="width: 98.5%;"></div>
+                                </div>
+                            </div>
+
+                            <div class="prob-row">
+                                <div class="prob-meta">
+                                    <span style="color:var(--safe-text);">Ham (Legitimate) Probability</span>
+                                    <span id="bar-ham-val" style="color:var(--safe-text);">1.5%</span>
+                                </div>
+                                <div class="progress-track">
+                                    <div id="progress-bar-ham" class="progress-fill ham" style="width: 1.5%;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Extracted Header Metadata -->
+                        <div style="background:#F8F7FC; border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:12px 16px; font-size:0.82rem;">
+                            <div style="margin-bottom:4px;"><strong>Subject:</strong> <span id="meta-display-subject"></span></div>
+                            <div style="margin-bottom:4px;"><strong>Sender:</strong> <span id="meta-display-sender"></span></div>
+                            <div id="meta-display-attachments" class="label-badge spam" style="display:none; margin-top:6px;"></div>
+                        </div>
+
+                        <!-- Natural Language Explanation -->
+                        <div style="font-size:0.88rem; line-height:1.55; color:var(--text-main); background:#FFFFFF; border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:14px 16px;">
+                            <strong>Analysis Summary:</strong>
+                            <div id="result-explanation-text" style="margin-top:4px; color:var(--text-muted);"></div>
+                        </div>
+
+                        <!-- Feature Token Indicators -->
+                        <div class="indicator-section">
+                            <div class="indicator-title">Key Spam Indicators Found</div>
+                            <div id="top-spam-indicators" class="token-cloud"></div>
+                        </div>
+
+                        <div class="indicator-section">
+                            <div class="indicator-title">Key Legitimate Indicators Found</div>
+                            <div id="top-ham-indicators" class="token-cloud"></div>
+                        </div>
+
+                        <!-- Mathematical Computation Details Accordion -->
+                        <div>
+                            <button type="button" id="btn-details-toggle" class="details-toggle">
+                                <span>View Mathematical Log-Likelihood Details</span>
+                                <span>▼</span>
+                            </button>
+                            <div id="details-content" class="details-content">
+                                <div>Total Extractable Tokens: <strong id="stat-total-tokens">0</strong></div>
+                                <div>Recognized in Vocabulary: <strong id="stat-recognized-tokens">0</strong></div>
+                                <div>Ignored Out-of-Vocabulary (OOV): <strong id="stat-unknown-tokens">0</strong></div>
+                                <hr style="border:none; border-top:1px solid #E2E0EE; margin:8px 0;">
+                                <div>Log Prior P(Spam): <strong id="stat-log-prior-spam">-0.6931</strong></div>
+                                <div>Log Prior P(Ham): <strong id="stat-log-prior-ham">-0.6931</strong></div>
+                                <div>Log Likelihood Σ P(w|Spam): <strong id="stat-log-likelihood-spam">0.0000</strong></div>
+                                <div>Log Likelihood Σ P(w|Ham): <strong id="stat-log-likelihood-ham">0.0000</strong></div>
+                                <div>Total Log Score (Spam): <strong id="stat-log-score-spam">0.0000</strong></div>
+                                <div>Total Log Score (Ham): <strong id="stat-log-score-ham">0.0000</strong></div>
+                                <div style="margin-top:6px; word-break:break-all;">Content SHA-256: <br><strong id="stat-content-hash"></strong></div>
+                            </div>
+                        </div>
+
+                        <!-- Non-Guarantee Security Notice -->
+                        <div class="disclaimer-box">
+                            <span style="font-size:1.1rem; line-height:1;">⚠️</span>
+                            <div>
+                                <strong>Safety Advisory:</strong>
+                                <span id="result-disclaimer-text"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =======================================================================
+             PART 3: DASHBOARD VIEW
+             ======================================================================= -->
+        <section id="dashboard" class="section">
+            <div class="section-header" style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px;">
+                <div>
+                    <div class="section-tag">Audit & Monitoring</div>
+                    <h2 class="section-title">Telemetry & Scan History</h2>
+                    <p class="section-desc">Real-time statistics derived directly from persistent database audit records.</p>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn btn-secondary btn-sm" onclick="refreshDashboard()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                        </svg>
+                        Refresh
+                    </button>
+                    <button class="btn btn-danger btn-sm" id="btn-open-clear-modal">Clear History</button>
+                </div>
+            </div>
+
+            <!-- Metric Cards (Part 3) -->
+            <div class="stats-cards-grid">
+                <div class="stat-card">
+                    <div class="stat-card-label">Total Emails Analyzed</div>
+                    <div id="dash-total-scans" class="stat-card-value">0</div>
+                    <span class="stat-card-badge badge-purple">Stored Scans</span>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-label">Spam Threats Detected</div>
+                    <div id="dash-spam-count" class="stat-card-value" style="color:var(--spam-solid);">0</div>
+                    <span class="stat-card-badge badge-rose">Flagged Threats</span>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-label">Legitimate (Ham) Emails</div>
+                    <div id="dash-ham-count" class="stat-card-value" style="color:var(--safe-solid);">0</div>
+                    <span class="stat-card-badge badge-green">Verified Ham</span>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-label">Spam Ratio</div>
+                    <div id="dash-spam-ratio" class="stat-card-value">0%</div>
+                    <span class="stat-card-badge badge-purple">Threat Ratio</span>
+                </div>
+            </div>
+
+            <!-- Distribution Chart and Analytics Grid -->
+            <div class="analytics-grid">
+                <div class="chart-card">
+                    <h3 style="font-size:1rem; margin-bottom:4px;">Classification Ratio</h3>
+                    <div class="chart-container">
+                        <svg class="chart-svg" width="180" height="180" viewBox="0 0 100 100">
+                            <!-- Background ring -->
+                            <circle cx="50" cy="50" r="40" fill="transparent" stroke="#E2E0EE" stroke-width="12"/>
+                            <!-- Ham segment -->
+                            <circle id="donut-circle-ham" cx="50" cy="50" r="40" fill="transparent" stroke="var(--safe-solid)" stroke-width="12" stroke-dasharray="0 251.3"/>
+                            <!-- Spam segment -->
+                            <circle id="donut-circle-spam" cx="50" cy="50" r="40" fill="transparent" stroke="var(--spam-solid)" stroke-width="12" stroke-dasharray="0 251.3"/>
+                        </svg>
+                        <div class="chart-center-text">
+                            <div id="donut-center-total" class="chart-center-value">0</div>
+                            <div class="chart-center-label">Scans</div>
+                        </div>
+                    </div>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background:var(--spam-solid)"></span> Spam
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot" style="background:var(--safe-solid)"></span> Ham
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom:0; display:flex; flex-direction:column; justify-content:center;">
+                    <h3 style="font-size:1.05rem; margin-bottom:8px;">🔒 Data Privacy Protocol</h3>
+                    <p style="font-size:0.88rem; color:var(--text-muted); line-height:1.6; margin-bottom:12px;">
+                        MailShield AI maintains a zero-exposure data policy. To prevent data leakage, user credentials, confidential attachments, and complete email message bodies are <strong>never written to disk or logged</strong>.
+                    </p>
+                    <div style="font-size:0.82rem; background:#F8F7FC; padding:12px; border-radius:var(--radius-sm); border:1px solid var(--border-subtle);">
+                        Audit logs record only SHA-256 cryptographic message digests, classification confidence percentages, header metadata, and safe truncated snippets.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Scan History Table (Part 3 & 8) -->
+            <div class="table-card">
+                <div class="table-header-bar">
+                    <h3 style="font-size:1.05rem;">Recent Scan Audit Log</h3>
+                    <span style="font-size:0.8rem; color:var(--text-muted)">Latest Scans First</span>
+                </div>
+
+                <div class="table-responsive">
+                    <table id="history-table" class="table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Subject & Hash</th>
+                                <th>Verdict</th>
+                                <th>Confidence</th>
+                                <th>Source</th>
+                                <th>Content Preview</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-tbody">
+                            <!-- Populated dynamically via app.js -->
+                        </tbody>
+                    </table>
+
+                    <div id="history-empty-state" class="empty-state">
+                        <div class="empty-state-icon">📂</div>
+                        <h4 style="font-size:1rem; margin-bottom:6px;">No Scans Recorded Yet</h4>
+                        <p style="font-size:0.86rem; max-width:320px; margin:0 auto 16px;">
+                            No email messages have been classified yet. Run your first analysis in the Email Scanner.
+                        </p>
+                        <button class="btn btn-primary btn-sm" data-route="scanner">Go to Scanner</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =======================================================================
+             PART 7: MODEL EVALUATION & METRICS VIEW
+             ======================================================================= -->
+        <section id="evaluation" class="section">
+            <div class="section-header">
+                <div class="section-tag">Machine Learning Performance</div>
+                <h2 class="section-title">Model Evaluation & Architecture</h2>
+                <p class="section-desc">Evaluated on a stratified held-out test split with zero data leakage.</p>
+            </div>
+
+            <!-- Warning Callout if Sample Dataset is Small -->
+            <div id="eval-warning-box" class="disclaimer-box" style="margin-bottom:24px; background:#FEF3C7; border-color:#F59E0B; color:#92400E;">
+                <span style="font-size:1.3rem;">ℹ️</span>
+                <div>
+                    <strong>Sample Dataset Demonstration Notice:</strong>
+                    <div id="eval-note-text" style="margin-top:2px;"></div>
+                </div>
+            </div>
+
+            <!-- Test Metrics Cards -->
+            <div class="stats-cards-grid" style="margin-bottom:28px;">
+                <div class="stat-card">
+                    <div class="stat-card-label">Test Set Accuracy</div>
+                    <div id="eval-accuracy" class="stat-card-value">--%</div>
+                    <span class="stat-card-badge badge-green">(TP + TN) / Total</span>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-label">Precision (Spam)</div>
+                    <div id="eval-precision" class="stat-card-value">--%</div>
+                    <span class="stat-card-badge badge-purple">TP / (TP + FP)</span>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-label">Recall (Spam)</div>
+                    <div id="eval-recall" class="stat-card-value">--%</div>
+                    <span class="stat-card-badge badge-purple">TP / (TP + FN)</span>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-label">F1-Score</div>
+                    <div id="eval-f1" class="stat-card-value">--%</div>
+                    <span class="stat-card-badge badge-purple">Harmonic Mean</span>
+                </div>
+            </div>
+
+            <div class="eval-grid">
+                <!-- 2x2 Confusion Matrix -->
+                <div class="card">
+                    <h3 style="font-size:1.1rem; margin-bottom:6px;">Confusion Matrix (Held-out Test Split)</h3>
+                    <p style="font-size:0.84rem; color:var(--text-muted)">Evaluates actual ground-truth labels vs model predictions on unseen records.</p>
+
+                    <div class="matrix-grid">
+                        <div></div>
+                        <div class="matrix-header">Pred: SPAM</div>
+                        <div class="matrix-header">Pred: HAM</div>
+
+                        <div class="matrix-header" style="writing-mode:horizontal-tb;">Actual SPAM</div>
+                        <div class="matrix-cell tp">
+                            <span id="cm-tp" class="matrix-val" style="color:var(--safe-solid);">0</span>
+                            <span class="matrix-label">True Positives (TP)</span>
+                        </div>
+                        <div class="matrix-cell fn">
+                            <span id="cm-fn" class="matrix-val" style="color:var(--spam-solid);">0</span>
+                            <span class="matrix-label">False Negatives (FN)</span>
+                        </div>
+
+                        <div class="matrix-header" style="writing-mode:horizontal-tb;">Actual HAM</div>
+                        <div class="matrix-cell fp">
+                            <span id="cm-fp" class="matrix-val" style="color:var(--spam-solid);">0</span>
+                            <span class="matrix-label">False Positives (FP)</span>
+                        </div>
+                        <div class="matrix-cell tn">
+                            <span id="cm-tn" class="matrix-val" style="color:#4338CA;">0</span>
+                            <span class="matrix-label">True Negatives (TN)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Model Parameter Details -->
+                <div class="card">
+                    <h3 style="font-size:1.1rem; margin-bottom:12px;">Classifier Specification</h3>
+                    <div style="font-size:0.88rem; line-height:1.7;">
+                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid #F3F4F6; padding:6px 0;">
+                            <span style="color:var(--text-muted)">Algorithm</span>
+                            <strong id="info-algorithm">Multinomial Naive Bayes</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid #F3F4F6; padding:6px 0;">
+                            <span style="color:var(--text-muted)">Operational Status</span>
+                            <strong id="info-status" style="color:var(--safe-solid);">Trained & Active</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid #F3F4F6; padding:6px 0;">
+                            <span style="color:var(--text-muted)">Total Training Documents</span>
+                            <strong id="info-total-samples">0</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid #F3F4F6; padding:6px 0;">
+                            <span style="color:var(--text-muted)">SPAM Documents</span>
+                            <strong id="info-spam-samples">0</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid #F3F4F6; padding:6px 0;">
+                            <span style="color:var(--text-muted)">HAM Documents</span>
+                            <strong id="info-ham-samples">0</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid #F3F4F6; padding:6px 0;">
+                            <span style="color:var(--text-muted)">Extracted Vocabulary |V|</span>
+                            <strong id="info-vocab-size">0</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid #F3F4F6; padding:6px 0;">
+                            <span style="color:var(--text-muted)">Prior P(SPAM)</span>
+                            <strong id="info-prior-spam">50.0%</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; padding:6px 0;">
+                            <span style="color:var(--text-muted)">Prior P(HAM)</span>
+                            <strong id="info-prior-ham">50.0%</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- =======================================================================
+             PART 10 & 11: ABOUT & PRIVACY
+             ======================================================================= -->
+        <section id="about" class="section">
+            <div class="section-header">
+                <div class="section-tag">Architecture & Compliance</div>
+                <h2 class="section-title">About MailShield AI</h2>
+                <p class="section-desc">Engineering standards, mathematical foundation, and privacy architecture.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="card" style="margin-bottom:0;">
+                    <h3 style="font-size:1.15rem; margin-bottom:10px;">📐 Mathematical Foundation</h3>
+                    <p style="font-size:0.9rem; color:var(--text-muted); line-height:1.6; margin-bottom:10px;">
+                        The backend implements a pure Java Multinomial Naive Bayes classifier. Under the naive assumption that token occurrences are conditionally independent given the class:
+                    </p>
+                    <div style="background:#F8F7FC; padding:12px; border-radius:var(--radius-sm); font-family:monospace; font-size:0.8rem; margin-bottom:10px;">
+                        log P(c|D) = log P(c) + Σ count(w, D) · log P(w|c)
+                    </div>
+                    <p style="font-size:0.88rem; color:var(--text-muted); line-height:1.6;">
+                        Laplace smoothing (α = 1.0) guarantees that zero probabilities never occur for words unseen in a particular class. Logarithmic probabilities prevent floating-point underflow, and the Log-Sum-Exp algorithm guarantees exact posterior normalization.
+                    </p>
+                </div>
+
+                <div class="card" style="margin-bottom:0;">
+                    <h3 style="font-size:1.15rem; margin-bottom:10px;">🔒 Security & Privacy Notice</h3>
+                    <p style="font-size:0.9rem; color:var(--text-muted); line-height:1.6; margin-bottom:10px;">
+                        MailShield AI was architected from the ground up to respect enterprise confidentiality:
+                    </p>
+                    <ul style="font-size:0.88rem; color:var(--text-muted); line-height:1.6; padding-left:20px;">
+                        <li><strong>No External API Calls:</strong> All NLP parsing and machine learning inference occurs locally inside your JVM.</li>
+                        <li><strong>Zero Raw-Body Persistence:</strong> Full message bodies are discarded immediately after in-memory scoring.</li>
+                        <li><strong>Attachment Isolation:</strong> Attachments inside .eml files are never saved to disk, opened, or executed.</li>
+                        <li><strong>XSS Defensive Filtering:</strong> All email HTML is stripped using JSoup and escaped before presentation.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Provider Integration Status (Part 11) -->
+            <div class="card" style="margin-top:24px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                    <div>
+                        <h3 style="font-size:1.15rem; margin-bottom:4px;">📬 Email Provider Integration (Gmail & IMAP)</h3>
+                        <p style="font-size:0.88rem; color:var(--text-muted)">
+                            Status: <span style="background:var(--primary-purple-light); color:var(--primary-purple); padding:2px 8px; border-radius:4px; font-weight:700;">Coming Soon / Not Configured</span>
+                        </p>
+                    </div>
+                    <span style="font-size:0.85rem; color:var(--text-muted)">OAuth 2.0 PKCE Architecture Ready</span>
+                </div>
+                <hr style="border:none; border-top:1px solid #E2E0EE; margin:14px 0;">
+                <p style="font-size:0.88rem; color:var(--text-muted); line-height:1.6;">
+                    MailShield AI does not require or request your Gmail passwords. Direct local scanning (Mode A: Paste and Mode B: .eml file upload) is 100% operational right now without any Google Cloud project configuration.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- =======================================================================
+         CLEAR HISTORY CONFIRMATION MODAL
+         ======================================================================= -->
+    <div id="clear-history-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 class="modal-title">Clear Classification History?</h3>
+            <p class="modal-desc">
+                Are you sure you want to permanently delete all scan records and statistics from the local H2 database? This action cannot be undone.
+            </p>
+            <div class="modal-actions">
+                <button type="button" id="btn-cancel-clear" class="btn btn-outline">Cancel</button>
+                <button type="button" id="btn-confirm-clear" class="btn btn-danger">Confirm & Clear</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =======================================================================
+         FOOTER
+         ======================================================================= -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div style="display:flex; align-items:center; gap:8px;">
+                <img src="/images/shield-logo.svg" alt="MailShield" width="22" height="22">
+                <span style="font-weight:700; color:var(--text-main);">MailShield AI</span>
+                <span>— Intelligent Spam Email Classifier</span>
+            </div>
+            <div>
+                Powered by Java Spring Boot & Multinomial Naive Bayes ML
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/js/app.js"></script>
+</body>
+</html>
